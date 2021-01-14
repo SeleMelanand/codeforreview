@@ -6,10 +6,10 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features={"src/test/java/features"},
-				 glue={"stepdefinition","hooks"},
+@CucumberOptions(features={"src/test/java/features/UpdatePersonalInformation.feature"},
+				 glue={"stepdefinition"},
 				 monochrome=true,
-				 dryRun=true,
+				 dryRun=false,
 				 strict=true
 				 )
 

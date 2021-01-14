@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -36,6 +37,7 @@ public class WrapperClass {
 		userName = prop.getProperty("UserName");
 		password = prop.getProperty("Password");
 	}
+
 	public void startApp(String browser) {
 		if (browser.equalsIgnoreCase("chrome")) {
 			System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
@@ -47,9 +49,6 @@ public class WrapperClass {
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		driver.get(url);
 		click(locateElement("class", "login"));
-		type(locateElement("id", "email"), userName);
-		type(locateElement("id", "passwd"), password);
-		click(locateElement("id", "SubmitLogin"));
 
 	}
 
@@ -70,9 +69,9 @@ public class WrapperClass {
 				return driver.findElementByTagName(locValue);
 			}
 		} catch (NoSuchElementException e) {
-			System.out.println("Exception occured on locate elements");
+			System.out.println("Exception occured on locate elements"+ locValue);
 		} catch (WebDriverException e) {
-			System.out.println("Exception occured on locate elements");
+			System.out.println("Exception occured on locate elements"+ locValue);
 
 		}
 		return null;
@@ -111,16 +110,22 @@ public class WrapperClass {
 		}
 		return textValue;
 	}
-	
+
 	public void selectValueByvalue(WebElement ele, String value) {
 		try {
 			new Select(ele).selectByVisibleText(value);
-			System.out.println("Element selected successfully"+ ele);
+			System.out.println("Element selected successfully" + ele);
 		} catch (Exception e) {
 			System.out.println("Exception occured on select element");
 		}
 	}
 
+	public void pagedown() {
+		// To scroll the page till the element is found
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("window.scrollBy(0,500)");
+	}
+		
 	public void closeAllBrowsers() {
 		try {
 			driver.quit();
