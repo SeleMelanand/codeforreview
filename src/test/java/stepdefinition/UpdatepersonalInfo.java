@@ -2,7 +2,6 @@ package stepdefinition;
 
 import java.util.List;
 
-import org.junit.internal.runners.model.EachTestNotifier;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
@@ -44,9 +43,9 @@ public class UpdatepersonalInfo extends WrapperClass {
 		click(locateElement("xpath", "//a[@title='Information']//span"));
 	}
 
-	@And("Enter updated firstname")
-	public void enterupdatedfirstname() {
-		type(locateElement("id", "firstname"), "updatedfirstname");
+	@And("Update firstname as (.*)")
+	public void updatefirstname(String value) {
+		type(locateElement("id", "firstname"), value);
 	}
 
 	@And("Enter current password")

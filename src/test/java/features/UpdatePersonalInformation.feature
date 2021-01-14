@@ -4,14 +4,16 @@ Background: User to login
 	Given User navigate to loginpage 
 	When Enter Username and password 
 	Then User logged in 
-	
+
+@updatescenario
 Scenario: Update Personal Information (positive) 
 	Given Click my personal information 
-	And Enter updated firstname 
+	And Update firstname as fname
 	And Enter current password 
 	When Select Save button to save changes 
 	Then check whether saved successfully message is getting displayed 
 
+@placingorderscenario
 Scenario: Placing an order and verifying the order details
 	Given Click Tshirts option
 	And Get the product details of the product added to the cart
@@ -20,4 +22,3 @@ Scenario: Placing an order and verifying the order details
 	And User confirm order
 	And get order details from order history
 	Then Verify the product details are added correctly to the cart
-	
