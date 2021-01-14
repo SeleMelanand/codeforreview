@@ -1,5 +1,9 @@
 package stepdefinition;
 
+import java.util.List;
+
+import org.junit.internal.runners.model.EachTestNotifier;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import cucumber.api.java.en.And;
@@ -10,11 +14,13 @@ import wrapperpackage.WrapperClass;
 
 public class UpdatepersonalInfo extends WrapperClass {
 	String productDetails = "";
-	String qty = "4";
 	String size = "M";
+	String productColor = "";
 	String addedProductDetails = "";
 	String addedProductSize = "";
 	String addedQty = "";
+	String orderRefNumber = "";
+	String addedProductColor = "";
 
 	@Given("User navigate to loginpage")
 	public void navigatetologinpage() {
@@ -69,32 +75,77 @@ public class UpdatepersonalInfo extends WrapperClass {
 	public void getproductdetails() {
 		pagedown();
 		click(locateElement("xpath", "//a[@class='product_img_link']//img"));
-		productDetails = getText(locateElement("xpath", "//div[@id='columns']/div[3]/div/div/div/div[3]/h1"));
+		switchToFrame(locateElement("class", "fancybox-iframe"));
+		productDetails = getText(locateElement("xpath", "//body[@id='product']/div/div/div[2]/h1"));
 		click(locateElement("xpath", "//p[@id='quantity_wanted_p']//input"));
-		type(locateElement("id", "quantity_wanted"), qty);
 		selectValueByvalue(locateElement("id", "group_1"), size);
+		productColor = locateElement("xpath", "//a[@class='color_pick selected']").getAttribute("name");
 	}
 
 	@And("Click on the item to Add to cart")
 	public void addproducttocart() {
-		click(locateElement("xpath", "//a[@title='Proceed to checkout']/span"));
+		click(locateElement("xpath", "//p[@id='add_to_cart']//span"));
+		switchOutOfFrame();
 	}
 
-	@When("Click Proceed to checkout")
+	@And("Click Proceed to checkout")
 	public void proceedtocheckout() {
 		click(locateElement("xpath", "//a[@title='Proceed to checkout']/span"));
+		pagedown();
+		click(locateElement("xpath", "//p[contains(@class,'cart_navigation')]//a/span"));
+		pagedown();
+		click(locateElement("xpath", "//p[contains(@class,'cart_navigation')]//button/span"));
+		click(locateElement("id", "uniform-cgv"));
+		click(locateElement("xpath", "//p[contains(@class,'cart_navigation')]//button/span"));
+		click(locateElement("class", "bankwire"));
+
+	}
+
+	@When("User confirm order")
+	public void userconfirmorder() {
+		pagedown();
+		click(locateElement("xpath", "//p[contains(@class,'cart_navigation')]//button/span"));
+		String ordertext = getText(locateElement("class", "box"));
+
+		String[] abc = ordertext.split("-");
+		String[] abcd = abc[5].split(" ");
+		orderRefNumber = abcd[9];
+		click(locateElement("xpath", "//a[@title='Back to orders']"));
+	}
+
+	@And("get order details from order history")
+	public void getorderdetailsfromorderhistory() {
+		List<WebElement> orderlist = findListOElements("//table[@id='order-list']/tbody/tr//a");
+
+		for (WebElement ordernumdetails : orderlist) {
+			if (ordernumdetails.getText().equalsIgnoreCase(orderRefNumber)) {
+				System.out.println("Identified correct order");
+				click(ordernumdetails);
+				break;
+			}
+		}
+		pageDownToSpecificElement(locateElement("xpath", "//div[@id='order-detail-content']//thead/tr"));
 	}
 
 	@Then("Verify the product details are added correctly to the cart")
 	public void verifyproductdetails() {
-		addedProductDetails = getText(locateElement("xpath", "//table[@id='cart_summary']/tbody//p/a"));
+		String proddetails = getText(locateElement("xpath", "//div[@id='order-detail-content']//tbody//td[2]/label"));
+		String[] proddetail1 = proddetails.split(",");
+		String[] proddetail2 = proddetail1[1].split(":");
+		addedProductSize = proddetail2[1].trim();
+		Assert.assertTrue(addedProductSize.contentEquals(size));
+
+		String[] proddetail3 = proddetails.split(" -");
+		addedProductDetails = proddetail3[0].trim();
 		Assert.assertTrue(addedProductDetails.equalsIgnoreCase(productDetails));
 
-		addedProductSize = getText(locateElement("xpath", "//table[@id='cart_summary']/tbody//td[2]//small[2]/a"));
-		Assert.assertTrue(addedProductSize.equalsIgnoreCase(size));
+		String[] proddetail4 = proddetails.split(":");
+		String[] proddetail5 = proddetail4[1].split(",");
 
-		addedQty = getText(locateElement("xpath", "//table[@id='cart_summary']/tbody//td[5]//input[2]"));
-		Assert.assertTrue(addedQty.equalsIgnoreCase(qty));
+		addedProductColor = proddetail5[0].trim();
+		Assert.assertTrue(addedProductColor.equalsIgnoreCase(productColor));
+
+		System.out.println("end of execution");
 
 	}
 

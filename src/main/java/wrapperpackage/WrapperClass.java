@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -69,9 +71,9 @@ public class WrapperClass {
 				return driver.findElementByTagName(locValue);
 			}
 		} catch (NoSuchElementException e) {
-			System.out.println("Exception occured on locate elements"+ locValue);
+			System.out.println("Exception occured on locate elements : " + locValue);
 		} catch (WebDriverException e) {
-			System.out.println("Exception occured on locate elements"+ locValue);
+			System.out.println("Exception occured on locate elements : " + locValue);
 
 		}
 		return null;
@@ -125,7 +127,45 @@ public class WrapperClass {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,500)");
 	}
-		
+
+	public void pageDownToSpecificElement(WebElement ele) {
+		// To scroll the page till the element is found
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0]. scrollIntoView(true);", ele);
+	}
+	
+	public void switchToFrame(WebElement ele) {
+		try {
+			driver.switchTo().frame(ele);
+			System.out.println("switch In to the Frame : " + ele);
+		} catch (NoSuchFrameException e) {
+			System.out.println("No Such Frame Exception : " + e);
+		} catch (WebDriverException e) {
+			System.out.println("WebDriverException : " + e);
+		}
+	}
+
+	public void switchOutOfFrame() {
+		try {
+			driver.switchTo().defaultContent();
+			System.out.println("switch out of the Frame");
+		} catch (NoSuchFrameException e) {
+			System.out.println("No Such Frame Exception : " + e);
+		} catch (WebDriverException e) {
+			System.out.println("WebDriverException : " + e);
+		}
+	}
+	
+	public  List<WebElement> findListOElements(String locatorvalue) {
+		List<WebElement> listOfElements = null;
+		try {
+			listOfElements = driver.findElementsByXPath(locatorvalue);
+		} catch (Exception e) {
+			System.out.println("Execption occured : "+ e);
+		}
+		return listOfElements;
+	}
+
 	public void closeAllBrowsers() {
 		try {
 			driver.quit();
