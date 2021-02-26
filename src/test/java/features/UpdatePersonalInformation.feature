@@ -5,15 +5,15 @@ Background: User to login
 	When Enter Username and password 
 	Then User logged in 
 
-@updatescenario
+@Regression
 Scenario: Update Personal Information (positive) 
 	Given Click my personal information 
-	And Update firstname as fname
+	And Update firstname
 	And Enter current password 
 	When Select Save button to save changes 
 	Then check whether saved successfully message is getting displayed 
 
-@placingorderscenario
+@Regression
 Scenario: Placing an order and verifying the order details
 	Given Click Tshirts option
 	And Get the product details of the product added to the cart

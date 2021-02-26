@@ -5,10 +5,10 @@ import java.util.List;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import wrapperpackage.WrapperClass;
 
 public class UpdatepersonalInfo extends WrapperClass {
@@ -23,8 +23,7 @@ public class UpdatepersonalInfo extends WrapperClass {
 
 	@Given("User navigate to loginpage")
 	public void navigatetologinpage() {
-		startApp("chrome");
-
+		startApp(prop.getProperty("browser"));
 	}
 
 	@When("Enter Username and password")
@@ -43,9 +42,9 @@ public class UpdatepersonalInfo extends WrapperClass {
 		click(locateElement("xpath", "//a[@title='Information']//span"));
 	}
 
-	@And("Update firstname as (.*)")
-	public void updatefirstname(String value) {
-		type(locateElement("id", "firstname"), value);
+	@And("Update firstname")
+	public void updatefirstname() {
+		type(locateElement("id", "firstname"), "fnamechanged");
 	}
 
 	@And("Enter current password")
@@ -66,14 +65,16 @@ public class UpdatepersonalInfo extends WrapperClass {
 	}
 
 	@Given("Click Tshirts option")
-	public void clicktsirtoption() {
+	public void clicktsirtoption() throws InterruptedException {
+		Thread.sleep(5000);
 		click(locateElement("xpath", "(//a[text()='T-shirts'])[2]"));
 	}
 
 	@And("Get the product details of the product added to the cart")
 	public void getproductdetails() {
 		pagedown();
-		click(locateElement("xpath", "//a[@class='product_img_link']//img"));
+		movetoSpecificElement(locateElement("xpath", "//a[@class='product_img_link']/img"));
+		click(locateElement("xpath", "//a[@class='product_img_link']/../a[2]/span"));
 		switchToFrame(locateElement("class", "fancybox-iframe"));
 		productDetails = getText(locateElement("xpath", "//body[@id='product']/div/div/div[2]/h1"));
 		click(locateElement("xpath", "//p[@id='quantity_wanted_p']//input"));
@@ -148,4 +149,9 @@ public class UpdatepersonalInfo extends WrapperClass {
 
 	}
 
+	//@And("Close the browser")
+	public void closecurrentBrowser() {
+		//browserClose();
+
+	}
 }
